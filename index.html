@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2F6B4F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Piano alimentare – si aggiorna ogni giorno</title>
+<style>
+:root{--bg:#F2F6F0;--card:#fff;--ink:#1D2B26;--mute:#566660;--line:#D5DFD6;--acc:#2F6B4F;--tom:#C23B26;--alt:#FFF1D6;--plate:#fff;--tintp:#E3EDE2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121A16;--card:#1B2620;--ink:#E8EFEA;--mute:#A3B3AA;--line:#2E3C34;--acc:#7CC39F;--tom:#F07A64;--alt:#3A3220;--plate:#EEF0E8;--tintp:#24332B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121A16;--card:#1B2620;--ink:#E8EFEA;--mute:#A3B3AA;--line:#2E3C34;--acc:#7CC39F;--tom:#F07A64;--alt:#3A3220;--plate:#EEF0E8;--tintp:#24332B;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.55 Figtree,system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 18px 56px}
+h1{font:700 clamp(26px,5vw,38px)/1.1 Fraunces,Georgia,serif;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 14px;font-size:16px}
+nav{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:8px}
+nav button{flex:0 0 auto;min-height:48px;font:600 16px Figtree,sans-serif;color:var(--ink);background:transparent;border:1.5px solid var(--line);border-radius:999px;padding:0 18px;cursor:pointer}
+nav button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+#wk button{border-radius:10px}
+button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--tom);outline-offset:2px}
+h2{font:700 28px/1.2 Fraunces,Georgia,serif;margin:10px 0 14px}
+section.m.now{border:2px solid var(--acc)}
+.nowb{background:var(--acc);color:var(--bg);font:600 12px Figtree,sans-serif;padding:3px 10px;border-radius:999px;margin-left:10px;vertical-align:middle}
+section.m{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:14px;display:grid;grid-template-columns:116px 1fr;gap:16px;align-items:start}
+.pic svg{width:116px;height:116px;display:block;filter:drop-shadow(0 3px 4px rgba(0,0,0,.28))}
+.pic{background:var(--tintp);border-radius:16px;padding:0}
+@media (max-width:520px){section.m{grid-template-columns:1fr}.pic{justify-self:center}}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px}
+h3{font:600 21px Fraunces,Georgia,serif;margin:0}
+label.done{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--mute);min-height:44px}
+input[type=checkbox]{width:26px;height:26px;accent-color:var(--acc)}
+ul{margin:8px 0;padding-left:22px}
+li{margin:3px 0}
+details{margin-top:8px}
+summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center;color:var(--acc)}
+details p{margin:0 0 6px}
+.alt{background:var(--alt);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:16px}
+.alt b{display:block;margin-bottom:2px}
+.olio{color:var(--tom);font-weight:600;font-size:15px;margin:6px 0 0}
+.note{color:var(--mute);font-size:16px}
+
+nav button.add{border-style:dashed;color:var(--acc)}
+textarea{width:100%;font:15px/1.45 ui-monospace,Menlo,Consolas,monospace;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.row button,.fb,.dl button{min-height:48px;padding:0 18px;border-radius:12px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:600 16px Figtree,system-ui,sans-serif;display:inline-flex;align-items:center;cursor:pointer}
+.fb.pri,.row button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+.dl{display:flex;gap:8px;align-items:center;margin:6px 0}.dl span{flex:1}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.top h1{flex:1;min-width:0}
+.cal{flex:0 0 auto;width:66px;border-radius:12px;background:var(--card);border:1px solid var(--line);box-shadow:0 3px 8px rgba(0,0,0,.2);overflow:hidden;text-align:center;position:relative;font-family:Figtree,system-ui,sans-serif;line-height:1}
+.cal::before,.cal::after{content:"";position:absolute;top:4px;width:6px;height:6px;border-radius:50%;background:var(--bg);box-shadow:inset 0 1px 1px rgba(0,0,0,.35)}
+.cal::before{left:14px}.cal::after{right:14px}
+.cal b{display:block;background:#C23B26;color:#fff;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:12px 0 5px}
+.cal strong{display:block;font:700 30px/1 Fraunces,Georgia,serif;padding:7px 0 3px;color:var(--ink)}
+.cal em{display:block;font-style:normal;font-size:12px;color:var(--mute);padding-bottom:7px;text-transform:capitalize}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<radialGradient id="gp" cx=".5" cy=".4" r=".7"><stop offset=".6" style="stop-color:var(--plate)"/><stop offset="1" stop-color="#b9c0b5"/></radialGradient>
+<radialGradient id="gi" cx=".5" cy=".5" r=".55"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".14"/></radialGradient>
+<radialGradient id="sh" cx=".5" cy=".5" r=".6"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/></radialGradient>
+<radialGradient id="hl" cx=".35" cy=".3" r=".55"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<filter id="gr" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="4" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 -.18" result="m"/><feComposite in="m" in2="SourceAlpha" operator="in"/></filter>
+</defs></svg>
+<main>
+<header class="top"><h1>Piano alimentare giorno per giorno</h1><div class="cal" id="cal" role="img"></div></header>
+<nav id="dz" aria-label="Diete"></nav>
+<nav id="wk" aria-label="Settimane"></nav>
+<nav id="nav" aria-label="Giorni"></nav>
+<div id="v"></div>
+</main>
+<script>
+var DAYS=[["lunedi","Lunedì"],["martedi","Martedì"],["mercoledi","Mercoledì"],["giovedi","Giovedì"],["venerdi","Venerdì"],["sabato","Sabato"],["domenica","Domenica"]];
+var S=["alla pomarola","con zucchine e pomodorini","con aglio, olio e peperoncino","con i broccoli","con pesto e pomodorini","con i funghi"];
+var SR=["Stufa ½ cipolla e aglio con 1 cucchiaino d’olio e un goccio d’acqua, aggiungi 200 g di passata e cuoci 15–20 minuti. Unisci il primo con l’altro cucchiaino d’olio a crudo e basilico.","Cuoci 150 g di zucchine a rondelle con aglio, 1 cucchiaino d’olio e acqua di cottura per 8–10 minuti, poi 100 g di pomodorini per 3 minuti. Unisci il primo e aggiungi olio a crudo e prezzemolo.","Scalda l’olio con aglio a fettine e peperoncino a fuoco bassissimo, poi unisci il primo con un mestolino d’acqua di cottura. È il piatto più ricco di olio: cena leggera.","Cuoci 200 g di broccoli 6–7 minuti, schiacciali in padella con aglio, 1 cucchiaino d’olio e acqua di cottura. Unisci il primo e completa con olio a crudo.","Frulla un mazzetto di basilico con ½ spicchio d’aglio, olio e acqua di cottura. Condisci fuori dal fuoco e aggiungi 100 g di pomodorini crudi. Il parmigiano non è nel piano: chiedi alla dietista.","Cuoci 200 g di funghi affettati a fuoco vivace 8–10 minuti con 1 cucchiaino d’olio e aglio. Unisci il primo, prezzemolo e olio a crudo."];
+var CK={"Riso integrale":"Riso integrale: cottura di circa 35–40 minuti.","Riso Venere":"Riso Venere: cottura di circa 35–40 minuti.","Riso basmati":"Riso basmati: cottura di circa 12–15 minuti.","Farro":"Farro: cottura di circa 20–25 minuti.","Orzo":"Orzo: cottura di circa 25–30 minuti.","Cous cous":"Cous cous: versa acqua bollente a filo (circa 100 ml), copri 5 minuti e sgrana con una forchetta."};
+var G=[["Pasta integrale","Pasta integrale","Pasta integrale","Pasta integrale","Pasta integrale","Pasta integrale"],["Riso integrale","Farro","Orzo","Riso Venere","Cous cous","Riso basmati"],["Farro","Riso integrale","Pasta tradizionale","Orzo","Riso Venere","Farro"],["Cous cous","Riso basmati","Riso integrale","Farro","Pasta integrale","Orzo"]];
+var AF=["prosciutto crudo o cotto","bresaola","pollo o tacchino arrosto","speck light"];
+var O={
+manzo:["Hamburger di manzo alla piastra, 140 g","Porri stufati (a piacere)","Macinato magro con erbe e pepe, 3–4 minuti per lato su piastra senza grassi. Porri a rondelle stufati coperti con acqua e 1 cucchiaino d’olio, 15 minuti.","Roast beef 140 g al posto dell’hamburger; insalata mista al posto dei porri."],
+roast:["Roast beef, 140 g","Insalata mista (a piacere)","Fette sottili di roast beef con limone e pepe; insalata con 1 cucchiaino d’olio.","Hamburger di manzo alla piastra, 140 g."],
+pollo:["Petto di pollo al limone, 140 g","Cavolfiore (a piacere)","Pollo 4–5 minuti per lato; nell’ultimo minuto aggiungi succo e scorza di limone. Cavolfiore a vapore 10–12 minuti con limone e 1 cucchiaino d’olio.","Petto di pollo ai ferri al posto del limone."],
+ferri:["Petto di pollo ai ferri, 140 g","Insalata mista (a piacere)","Pollo su griglia ben calda 4–5 minuti per lato, con rosmarino e limone; insalata con 1 cucchiaino d’olio.","Petto di pollo al limone."],
+tacchino:["Fesa di tacchino alla salvia, 140 g","Erbette saltate (a piacere)","Rosola la fesa 2–3 minuti per lato con salvia, aglio e 1 cucchiaino d’olio, sfuma con brodo o acqua e cuoci 5 minuti coperta. Erbette lessate e saltate in padella.","Altra carne magra bianca, 140 g, senza grasso visibile né pelle."],
+maiale:["Arista agli aromi, 140 g","Broccoli lessi (a piacere)","Marina l’arista 20 minuti con rosmarino, salvia, aglio e pepe, poi cuocila 4–5 minuti per lato. Broccoli a vapore 8 minuti con limone e 1 cucchiaino d’olio.","Bistecchina di maiale alla brace."],
+mozza:["Mozzarella vaccina, 120 g, con pomodori e origano","Insalata o verdure a piacere","Taglia pomodori maturi e mozzarella, condisci con origano, basilico e 1 cucchiaino d’olio.","Altro formaggio fresco, 120 g (1–2 volte a settimana)."],
+merluzzo:["Merluzzo all’isolana, 180–200 g","Cavolfiore (a piacere)","Cuoci 5 minuti pomodorini, capperi e aglio con 1 cucchiaino d’olio, poi il merluzzo coperto 8–10 minuti. Senza sale.","Sogliola al piatto."],
+sogliola:["Sogliola al piatto, 180–200 g","Insalata o cavolfiore (a piacere)","2–3 minuti per lato con 1 cucchiaino d’olio, poi succo di limone e prezzemolo.","Merluzzo all’isolana; pesce fresco o surgelato."],
+tonno:["Tonno sott’olio sgocciolato, 90 g, con fagioli","Insalata con cipolla rossa (a piacere)","Mescola il tonno ben sgocciolato con i fagioli cotti, cipolla rossa sottile, prezzemolo e limone. Il tonno è previsto 0–1 volta a settimana.","Un altro secondo a scelta dalla scheda Sostituzioni."]};
+var DW=[["manzo","pollo","tacchino","sogliola","maiale"],["ferri","mozza","merluzzo","tacchino","roast"],["sogliola","maiale","tonno","pollo","mozza"],["tacchino","merluzzo","manzo","mozza","sogliola"]];
+var SW=[[0,0,0,0,0],[0,"p",0,"p",0],["l",0,"l",0,"p"],[0,0,"p",0,"l"]];
+var SL=[["Uova strapazzate (2 uova, 100–120 g)","Erbette saltate (a piacere)","Lessa le erbette e saltale con aglio e ½ cucchiaino d’olio. Cuoci le uova sbattute a fuoco basso con ½ cucchiaino d’olio, mescolando fino alla cremosità."],["Frittata al forno con spinaci (2 uova, 100–120 g)","Insalata (a piacere)","Sbatti le uova con 150 g di spinaci lessati e strizzati e noce moscata; teglia unta con ½ cucchiaino d’olio, forno a 180 °C per 15–20 minuti."],["Frittata in padella con zucchine (2 uova, 100–120 g)","Insalata (a piacere)","Stufa 150 g di zucchine con ½ cucchiaino d’olio, versa le uova sbattute e cuoci coperto a fuoco basso, girando a metà."],["Uova sode (2 uova, 100–120 g)","Verdure al vapore (a piacere)","Uova sode: 9 minuti in acqua bollente. Verdure al vapore con limone e ½ cucchiaino d’olio."]];
+var SU=[["Spiedini di carni miste","cubetti di carne magra marinati con limone e rosmarino, 10–12 minuti su griglia"],["Polpettone","macinato magro con erbe e poca mollica di pane integrale ammollata, forno a 180 °C per circa 30 minuti"],["Spezzatino","carne magra a cubetti stufata con cipolla, pomodoro e rosmarino, circa 45 minuti"],["Arrosto di carni miste","fette di carni magre arrostite in forno con rosmarino e aglio, 25–30 minuti"]];
+var SV=[["zucca gialla","fagioli zolfini"],["carote","ceci"],["zucca gialla","ceci"],["carote","fagioli zolfini"]];
+var PA="Al posto del primo (100 g): riso integrale, Venere o basmati, farro, orzo, cous cous, pasta integrale o tradizionale.";
+var PN="Il pane (50–60 g) si può sostituire con 150–180 g di patate (saltuariamente) o di legumi cotti e sgocciolati.";
+var FR="Frutta fresca, 1 porzione";
+var q0=1;function rs(n){q0=n}function rn(){q0=(q0*16807)%2147483647;return q0/2147483647}
+function B(t,at,f,g){var r='<'+t+' '+at;return r+' fill="'+f+'"/>'+r+' fill="url(#sh)"/>'+r+' fill="url(#hl)"/>'+(g?r+' fill="#000" opacity=".4" filter="url(#gr)"/>':'')}
+function C(x,y,r,f,g){return B('circle','cx="'+x+'" cy="'+y+'" r="'+r+'"',f,g)}
+function E(x,y,rx,ry,rot,f,g){return B('ellipse','cx="'+x+'" cy="'+y+'" rx="'+rx+'" ry="'+ry+'" transform="rotate('+rot+' '+x+' '+y+')"',f,g)}
+function lf(x,y,rot,s,c){return '<g transform="translate('+x+' '+y+') rotate('+rot+') scale('+s+')">'+B('ellipse','rx="9" ry="4.5"',c)+'<path d="M-8 0H8" stroke="#0003" stroke-width=".8"/></g>'}
+function tm(x,y,r){return C(x,y,r,"#D9372A")}
+function ring(x,y,r,f,i){return C(x,y,r,f)+C(x,y,r*.62,i)}
+function sc(n,x,y,R,f){var s="",i,r,a;for(i=0;i<n;i++){r=Math.sqrt(rn())*R;a=rn()*6.283;s+=f(x+r*Math.cos(a),y+r*Math.sin(a),i)}return s}
+function dt(n,x,y,R,rad,f){return sc(n,x,y,R,function(px,py){return '<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+rad+'" fill="'+f+'"/>'})}
+var SDS={
+insalata:function(){rs(5);var s="",c=["#6FAE4C","#8CC25E","#4E9A4B","#7DB955","#5FA346"],i;for(i=0;i<6;i++)s+=lf(82+rn()*8-4,80+rn()*8-4,i*60,.9,c[i%5]);return s+tm(88,86,3.5)},
+cavolfiore:function(){var s="",p=[[78,80],[86,78],[82,87],[90,86],[74,87],[83,72]],i;for(i=0;i<6;i++)s+=C(p[i][0],p[i][1],6,"#EFE6CC",1);return s},
+broccoli:function(){var s="",p=[[78,80],[87,78],[82,88],[91,87],[73,87]],i;for(i=0;i<5;i++)s+=C(p[i][0],p[i][1]+6,2.2,"#A9C97A")+C(p[i][0],p[i][1],6,"#3E8A3C",1);return s},
+erbette:function(){var s="",i;for(i=0;i<4;i++)s+=lf(82,80,i*50-20,1.15,"#3F8F4A");return s},
+porri:function(){var s="",p=[[78,80],[88,78],[83,89]],i;for(i=0;i<3;i++)s+=ring(p[i][0],p[i][1],7,"#CFE09A","#E8F0C4");return s}};
+function nest(c,x,y){rs(11);var s="",i,a,rx,ry,t;for(i=0;i<16;i++){a=(rn()*180).toFixed(0);rx=(11+rn()*22).toFixed(1);ry=(9+rn()*18).toFixed(1);t='<ellipse cx="'+x+'" cy="'+y+'" rx="'+rx+'" ry="'+ry+'" transform="rotate('+a+' '+x+' '+y+')" fill="none" stroke=';s+=t+'"#0003" stroke-width="3.6"/>'+t+'"'+c+'" stroke-width="2.4"/>'}return s+'<circle cx="'+x+'" cy="'+y+'" r="33" fill="url(#sh)"/><circle cx="'+x+'" cy="'+y+'" r="33" fill="url(#hl)"/>'}
+var GR={"Riso integrale":[3.4,1.5,80],"Riso Venere":[3.4,1.5,80],"Riso basmati":[4.2,1.2,70],"Farro":[3.6,2,70],"Orzo":[3.2,1.4,80],"Cous cous":[1.4,1.4,170]};
+function mound(g,x,y){rs(21);var c=GC[g],d=GR[g];return '<circle cx="'+x+'" cy="'+y+'" r="33" fill="'+c+'"/>'+sc(d[2],x,y,32,function(px,py){return '<ellipse cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" rx="'+d[0]+'" ry="'+d[1]+'" transform="rotate('+(rn()*180).toFixed(0)+' '+px.toFixed(1)+' '+py.toFixed(1)+')" fill="'+c+'" stroke="#0003" stroke-width=".5"/>'})+'<circle cx="'+x+'" cy="'+y+'" r="33" fill="url(#sh)"/><circle cx="'+x+'" cy="'+y+'" r="33" fill="url(#hl)"/>'}
+var TP=[
+function(x,y){return C(x,y+2,16,"#C8321E",1)+C(x-7,y-3,8,"#D84A30")+C(x+8,y+7,6,"#B92A18")+lf(x+2,y-10,30,1,"#4E9A4B")+lf(x-6,y+8,-40,.9,"#5FA346")},
+function(x,y){var s="",p=[[-10,-4],[2,-12],[10,2],[-4,8],[14,-8]],t=[[-12,8],[6,10],[-2,-2]],i;for(i=0;i<5;i++)s+=ring(x+p[i][0],y+p[i][1],6,"#7FB04A","#CFE6A0");for(i=0;i<3;i++)s+=tm(x+t[i][0],y+t[i][1],4.5);return s},
+function(x,y){rs(33);var s='<circle cx="'+x+'" cy="'+y+'" r="24" fill="#F2C34A" opacity=".28"/>',i;for(i=0;i<5;i++)s+=E(x+rn()*24-12,y+rn()*20-10,4,2,rn()*180,"#F7EBC8");return s+dt(9,x,y,18,1.4,"#D6452F")+dt(10,x,y,18,1.2,"#4E9A4B")},
+function(x,y){var s="",p=[[-10,-2],[4,-10],[10,6],[-4,8]],i;for(i=0;i<4;i++)s+=C(x+p[i][0],y+p[i][1],5.5,"#3E8A3C",1)+C(x+p[i][0]+3,y+p[i][1]+2,4,"#4E9A4B")+C(x+p[i][0]-3,y+p[i][1]+3,3.5,"#2F7A3A");return s},
+function(x,y){var s=C(x,y,15,"#7FB04A",1)+C(x-8,y+5,8,"#8DBE56")+C(x+9,y-5,6,"#6FA23F"),t=[[-8,-8],[8,8],[12,-10]],i;for(i=0;i<3;i++)s+=tm(x+t[i][0],y+t[i][1],5);return s},
+function(x,y){rs(35);var s="",p=[[-10,-4,20],[2,-10,-30],[10,2,50],[-4,8,10],[12,-10,80]],i;for(i=0;i<5;i++)s+=E(x+p[i][0],y+p[i][1]+3,2.6,3.2,p[i][2],"#EBDCC4")+E(x+p[i][0],y+p[i][1],7,4.5,p[i][2],"#B58B63",1);return s+dt(8,x,y,16,1.2,"#4E9A4B")}];
+var K={
+salad:function(){rs(71);var s="",c=["#6FAE4C","#8CC25E","#4E9A4B","#7DB955","#5FA346"],i;for(i=0;i<9;i++)s+=lf(60+rn()*20-10,60+rn()*20-10,i*40,1.6,c[i%5]);return s+tm(52,56,5)+tm(68,66,5)},
+pasta:function(o){return nest(GC[o.g],60,60)+(TP[o.s]?TP[o.s](60,60):"")},
+grain:function(o){return mound(o.g,60,60)+(TP[o.s]?TP[o.s](60,60):"")},
+eggs:function(){rs(41);var c=["#F4D35E","#F7DD72","#E9C13F"];return sc(10,50,52,15,function(px,py,i){return E(px,py,7+rn()*3,5+rn()*2,rn()*180,c[i%3],1)})+dt(9,50,52,16,.9,"#2a2a2a")},
+slices:function(o){var s="",p=[[36,62,-20],[50,54,-8],[64,48,6]],i;for(i=0;i<3;i++)s+=E(p[i][0],p[i][1],17,11,p[i][2],o.a,1)+E(p[i][0],p[i][1],13.5,8,p[i][2],o.b,1);return s+lf(30,44,-30,1,"#5FA346")},
+burger:function(){rs(43);return C(50,52,21,"#6B3A24",1)+'<path d="M38 44L58 64M46 38L66 58M34 54L50 70" stroke="#2A140C" stroke-width="3" opacity=".55" stroke-linecap="round"/>'+dt(7,50,52,16,1.2,"#4E9A4B")},
+chicken:function(o){var s=E(50,52,24,15,-15,"#D8A24F",1)+'<path d="M36 50L48 60M44 44L58 56M52 40L66 52" stroke="#6B3A18" stroke-width="3" opacity="'+(o.b==="f"?.75:.5)+'" stroke-linecap="round" transform="rotate(-15 50 52)"/>';if(o.b==="l")s+=C(72,36,9,"#F6F0B8")+C(72,36,7.5,"#F2D04A")+'<path d="M72 29V43M65 36H79M67 31L77 41M77 31L67 41" stroke="#F8EBA0" stroke-width=".8"/>';else s+='<path d="M28 68C40 76 54 78 66 72" stroke="#4E7A3A" stroke-width="1.5" fill="none"/>'+dt(8,48,72,14,1.1,"#4E7A3A");return s},
+fish:function(o){rs(47);var s=E(50,52,25,13,-10,o.a,1)+'<path d="M32 50q8-5 14 0M44 58q8-5 14 0M54 48q8-5 14 0" stroke="#fff" stroke-width="1.3" fill="none" opacity=".6" transform="rotate(-10 50 52)"/>';if(o.b==="m")s+=tm(34,70,5)+tm(48,72,5)+tm(62,70,4.5)+dt(3,72,60,4,2,"#5B9A4B")+E(40,34,3.5,2.5,20,"#4A2A44");else s+='<path d="M60 70a12 12 0 0 1 24 0z" fill="#F2D04A"/><path d="M60 70a12 12 0 0 1 24 0" fill="none" stroke="#F6F0B8" stroke-width="2"/>'+dt(9,44,36,10,1.2,"#4E9A4B");return s},
+cheese:function(){var p=[[34,62,1],[46,56,0],[58,52,1],[70,52,0]],s="",i;for(i=0;i<4;i++)s+=p[i][2]?ring(p[i][0],p[i][1],10,"#D3392B","#E56A58")+dt(4,p[i][0],p[i][1],4,.8,"#F0D890"):C(p[i][0],p[i][1],10,"#FBFAF3",1)+'<circle cx="'+p[i][0]+'" cy="'+p[i][1]+'" r="10" fill="none" stroke="#0002"/>';return s+lf(54,44,-20,1.1,"#4E9A4B")+dt(8,52,52,20,.9,"#6B8F3A")},
+tonno:function(){rs(51);return C(46,50,27,"#ECEFE9",1)+'<circle cx="46" cy="50" r="22" fill="#D9DCD6"/>'+C(46,50,20,"#EAD9B0")+sc(14,46,50,15,function(px,py){return E(px,py,3.6,2.2,rn()*180,"#F3E7C8",1)})+sc(6,46,50,12,function(px,py){return E(px,py,4,2.6,rn()*180,"#C98B76",1)})+sc(3,46,50,10,function(px,py){return '<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="4" fill="none" stroke="#9B3B6A" stroke-width="1.6"/>'})+dt(6,46,50,14,1.1,"#4E9A4B")},
+soup:function(o){rs(53);return C(50,52,28,"#F2F3EE",1)+'<circle cx="50" cy="52" r="23" fill="#D7DAD3"/>'+C(50,52,21,o.a,1)+'<path d="M38 50c4-8 12-10 18-6s6 12 0 14-12-2-12-8 8-8 12-4" fill="none" stroke="#F4DFA0" stroke-width="1.8" stroke-linecap="round"/>'+sc(5,50,52,13,function(px,py){return E(px,py,3.2,2,rn()*180,"#F3E7C8",1)})+'<path d="M40 40C48 36 58 38 62 44" stroke="#4E7A3A" stroke-width="1.4" fill="none"/>'+dt(8,52,40,8,1,"#4E7A3A")+'<g transform="rotate(-18 84 84)">'+B('rect','x="74" y="76" width="20" height="16" rx="4"',"#D9B26B",1)+'<rect x="77" y="79" width="14" height="10" rx="2.5" fill="#F0D79A"/></g>'},
+bread:function(o){var w='<path d="M31 52c6-5 11 4 18-1s12 4 20-1v13c-7 5-12-3-19 2s-12-3-19 2z"';return B('path','d="M24 80V48C24 30 38 24 50 24s26 6 26 24v32z"',"#B5793A",1)+B('path','d="M29 76V50c0-13 9-19 21-19s21 6 21 19v26z"',"#F1D9A0",1)+B('path','d="M31 52c6-5 11 4 18-1s12 4 20-1v13c-7 5-12-3-19 2s-12-3-19 2z"',o.b)+'<g transform="translate(0 11)">'+B('path','d="M31 52c6-5 11 4 18-1s12 4 20-1v13c-7 5-12-3-19 2s-12-3-19 2z"',o.b)+'</g>'+C(86,82,13,"#F4F4F0",1)+C(86,82,9,"#FFFFFF")+C(86,82,7,"#3B2418")+'<circle cx="84" cy="80" r="3" fill="#6B4630" opacity=".7"/><rect x="97" y="80" width="6" height="4" rx="2" fill="#F4F4F0"/>'},
+snack:function(){var d=function(x){return '<g transform="'+x+'" fill="#7A5524" opacity=".55"><circle cx="0" cy="-8" r="1.4"/><circle cx="-8" cy="0" r="1.4"/><circle cx="8" cy="0" r="1.4"/><circle cx="0" cy="8" r="1.4"/><circle cx="0" cy="0" r="1.4"/></g>'};return B('rect','x="20" y="40" width="34" height="34" rx="4" transform="rotate(-12 37 57)"',"#D9B26B",1)+d("translate(37 57) rotate(-12)")+B('rect','x="44" y="48" width="34" height="34" rx="4" transform="rotate(9 61 65)"',"#E3BD78",1)+d("translate(61 65) rotate(9)")+E(86,78,10,8,-20,"#9A6B3F",1)+'<path d="M78 76q8-8 16 0M78 82q8 6 16 0" stroke="#4A2E14" stroke-width="1.4" fill="none" opacity=".7"/>'+E(76,92,8,6.5,30,"#8A5F36",1)},
+pizza:function(){rs(61);return C(60,60,38,"#E0A95A",1)+C(60,60,32,"#C8321E",1)+sc(7,60,60,22,function(px,py){return C(px.toFixed(1),py.toFixed(1),6.5,"#F7EFC6",1)})+lf(50,50,20,1,"#4E9A4B")+lf(70,66,-30,1,"#4E9A4B")+lf(52,72,60,.9,"#5FA346")+'<path d="M60 60L100 40L100 82z" style="fill:var(--plate)"/>'+C(96,98,10,"#D98E1F",1)+C(96,98,7,"#EDB04C")+'<circle cx="96" cy="98" r="10" fill="none" stroke="#F8F4E8" stroke-width="2.2"/>'}
+};
+var GC={"Pasta integrale":"#D9B15C","Pasta tradizionale":"#EAC878","Riso integrale":"#C9A878","Riso Venere":"#3B2F3F","Riso basmati":"#F1EBDD","Farro":"#B98F5E","Orzo":"#E3D3A6","Cous cous":"#F0CF73"};
+var AC=["#D98B8B","#B5473C","#E8C4A0","#C97B5B"];
+var KM={manzo:{k:"burger",side:"porri"},roast:{k:"slices",a:"#7A3B2A",b:"#C9736A",side:"insalata"},pollo:{k:"chicken",b:"l",side:"cavolfiore"},ferri:{k:"chicken",b:"f",side:"insalata"},tacchino:{k:"slices",a:"#D9B88A",b:"#F3E3CC",side:"erbette"},maiale:{k:"slices",a:"#B9824E",b:"#E9CFA6",side:"broccoli"},mozza:{k:"cheese",side:"insalata"},merluzzo:{k:"fish",a:"#EDE5D3",b:"m",side:"cavolfiore"},sogliola:{k:"fish",a:"#E3C98E",b:"s",side:"insalata"},tonno:{k:"tonno",side:"insalata"}};
+function ill(w,i,j){var o={k:""},s,g;
+if(j===0){o.k="bread";o.b=AC[w]}
+else if(j===3)o.k="snack";
+else if(j===1){if(i===5){o.k="eggs";o.side="erbette"}else{s=i===6?5:i;g=G[w][s];o.k=g.indexOf("Pasta")===0?"pasta":"grain";o.g=g;o.s=s}}
+else if(i===5)o.k="pizza";
+else if(i===6){o.k="soup";o.a=SV[w][0]==="carote"?"#E57F2A":"#E8A23A"}
+else o=KM[DW[w][i]];
+return svg(o)}function svg(o){return '<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="55" fill="url(#gp)"/><circle cx="60" cy="60" r="46" style="fill:var(--plate)"/><circle cx="60" cy="60" r="46" fill="url(#gi)"/>'+K[o.k](o)+(o.side?SDS[o.side]():"")+'</svg>'}
+function pane(x,leg){return x==="p"?"Pane integrale 50–55 g + patate 150–180 g (saltuariamente)":x==="l"?"Pane integrale 50–55 g + "+(leg||"ceci, fagioli o lenticchie")+" 150–180 g cotti e sgocciolati":"Pane integrale 100–110 g"}
+function mk(w,i){
+var m=[],we=i>4,g=G[w][i>4?(i===6?5:0):i];
+m.push({t:"Colazione",c:["Caffè senza zucchero","Pane integrale 120 g con 50–55 g di "+AF[w]+" (in alternativa: crudo/cotto, bresaola, pollo/tacchino arrosto, speck light)"],we:we?"Nel weekend, in alternativa: una porzione di yogurt greco tipo Fage TruBlend, aromatizzato a piacere.":""});
+if(i===5){var s=SL[w];m.push({t:"Pranzo",c:[s[0],s[1],"Pane integrale",FR],r:s[2],a:"Le uova sono previste 1 volta a settimana.",o:"circa 1 cucchiaino d’olio"});
+m.push({t:"Cena",c:["“Pasto libero” con eventuale bevanda: pizza e birra"]})}
+else if(i===6){var u=SU[w];m.push({t:"Pranzo",c:[g+" "+S[5]+", 100 g",u[0]+", 140 g","Verdure alla griglia (a piacere)",FR+" (o dessert)"],r:SR[5]+(CK[g]?" "+CK[g]:"")+" "+u[0]+": "+u[1]+".",a:PA+" Il dessert può sostituire la frutta una tantum, meglio sorbetto o gelato alla frutta.",o:"circa 2 cucchiaini d’olio"});
+var v=SV[w];m.push({t:"Cena",c:["Vellutata di "+v[0],v[1].charAt(0).toUpperCase()+v[1].slice(1)+", 150–180 g cotti","Verdure a piacere","Metà porzione di pane (50–60 g), per es. bruschetta"],r:"Stufa ½ cipolla con ½ cucchiaino d’olio, aggiungi "+(v[0]==="carote"?"250 g di carote":"250 g di zucca")+" e acqua, cuoci 20 minuti e frulla. Scalda i legumi con rosmarino. I legumi sostituiscono metà del pane.",a:"Fagioli zolfini o ceci, a scelta.",o:"circa 1 cucchiaino d’olio"})}
+else{m.push({t:"Pranzo",c:[g+" "+S[i]+", 100 g","Insalata o verdure a piacere",FR],r:SR[i]+(CK[g]?" "+CK[g]:""),a:PA,o:"circa 2 cucchiaini d’olio"});
+var x=O[DW[w][i]],sw=SW[w][i];m.push({t:"Cena",c:[x[0],x[1],pane(sw,DW[w][i]==="tonno"?"fagioli":0)],r:x[2],a:x[3]+" "+PN,o:"circa 1 cucchiaino d’olio"})}
+m.push({t:"Spuntino del pomeriggio",c:["Un pacchetto di cracker integrali Mulino Bianco","Un paio di noci"]});
+return m}
+var SO=["<b>Pasta (100 g)</b>: riso integrale, Venere o basmati, farro, orzo, cous cous, pasta integrale o tradizionale. I primi ruotano ogni settimana.","<b>Pane (50–60 g)</b>: 150–180 g di patate (saltuariamente) o di legumi cotti e sgocciolati: piselli, ceci, fagioli, lenticchie. Nelle settimane 2–4 compare a rotazione nelle cene.","<b>Secondo piatto</b>: carni magre, preferibilmente bianche, senza grasso e pelle, 140 g, 3–4 volte a settimana · uova 100–120 g (2), 1 volta · formaggio fresco 120 g (mozzarella vaccina), 1–2 volte · tonno sott’olio 90 g, 0–1 volta · pesce fresco o surgelato 180–200 g, 1–2 volte · salumi senza grasso visibile 90 g, 1 volta al mese. La rotazione rispetta queste frequenze.","<b>Frutta (1 porzione)</b>: 150 g di mele, pere, susine, ananas, kiwi · 250 g di melone, albicocche, pesche, fragole, arance, ciliegie · 120 g di banana, mandarini o clementine. Una tantum può essere sostituita da un piccolo dessert o gelato, meglio sorbetto o alla frutta.","<b>Colazione</b>: l’affettato ruota ogni settimana; nel weekend, in alternativa, yogurt greco tipo Fage TruBlend.","<b>Olio extravergine o altro</b>: 5 cucchiaini da tè in tutta la giornata (circa 2 ½ cucchiai da minestra)."];
+var CN=["Varia il più possibile i cibi durante la settimana.","Cotture semplici: griglia, vapore, cartoccio, microonde. Pomodoro fresco una volta a settimana come condimento, “scoglio” o prodotti ittici, verdure in abbondanza per il primo.","Sale con moderazione: insaporisci con limone, aceto balsamico e di mele, salsa di pomodoro, spezie ed erbe aromatiche. Evita maionese e salse untuose.","Acqua: 1,5–2 litri al giorno. Evita bibite zuccherate come cola, succhi di frutta, aperitivi, tè freddo e alcolici. Concesse bevande light e zero, tè e tisane senza zuccheri.","Stile di vita attivo, seguendo le indicazioni del medico. Obiettivo: 150–160 minuti di attività aerobica continua (passeggiata) a settimana.","Non introdurre: snack salati, dolciumi, frutta secca oleosa e atipica (cocco, avocado), canditi, burro, panna, mascarpone, maionese, cioccolato, pasta sfoglia, strutto. Evita insaccati (mortadella, finocchiona, salame, salsiccia), pancetta e lardo.","Mangia con calma, a tavola, a televisore spento, meglio in compagnia."];
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+var NOM=["colazione","pranzo","cena","spuntino"];
+function nd(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function rk(t){t=nd(t);return /colazione/.test(t)?0:/spuntino|merenda/.test(t)?(/mattin/.test(t)?1:3):/pranzo/.test(t)?2:/cena/.test(t)?4:5}
+function dl(s){var a=nd(s),r=[],ix=[];if(/tutt|ogni/.test(a))return DAYS.map(function(d){return d[0]});DAYS.forEach(function(d,i){if(a.indexOf(d[0])>=0){r.push(d[0]);ix.push(i)}});if(ix.length===2&&/-|–|fino|\bal\b/.test(a))r=DAYS.slice(ix[0],ix[1]+1).map(function(d){return d[0]});return r}
+function parse(t){var D={name:"",start:null,weeks:1,W:{},so:[],cn:[]},w=1,days=[],m=null,sec="",L=t.split(/\r?\n/),i,l,x,n=0,k,d;
+for(i=0;i<L.length;i++){l=L[i].trim();if(!l)continue;
+if(x=/^(dieta|nome)\s*:\s*(.+)/i.exec(l)){D.name=esc(x[2]);continue}
+if(x=/^inizio\s*:\s*(\d{4})-(\d{1,2})-(\d{1,2})/i.exec(l)){D.start=[+x[1],+x[2]-1,+x[3]];continue}
+if(x=/^settimane\s*:\s*(\d+)/i.exec(l)){D.weeks=Math.min(12,Math.max(1,+x[1]));continue}
+if(x=/^#\s*settimana\s*(\d+)/i.exec(l)){w=+x[1];sec="";days=[];m=null;continue}
+if(x=/^#\s*(sostituzioni|consigli)/i.exec(l)){sec=nd(x[1])==="consigli"?"cn":"so";days=[];m=null;continue}
+if(x=/^###\s*(.+)/.exec(l)){if(!days.length)continue;m={t:esc(x[1]),c:[],r:"",a:"",o:""};n++;D.W[w]=D.W[w]||{};days.forEach(function(d){(D.W[w][d]=D.W[w][d]||[]).push(m)});continue}
+if(x=/^##\s*(.+)/.exec(l)){sec="";m=null;days=dl(x[1]);continue}
+if(m&&(x=/^(preparazione|ricetta)\s*:\s*(.*)/i.exec(l))){m.r=esc(x[2]);continue}
+if(m&&(x=/^alternativ[ae]\s*:\s*(.*)/i.exec(l))){m.a=esc(x[1]);continue}
+if(m&&(x=/^olio\s*:\s*(.*)/i.exec(l))){m.o=esc(x[1]);continue}
+x=/^[-•*]\s*(.+)/.exec(l);
+if(sec){if(x)D[sec].push(esc(x[1]));continue}
+if(m){if(x)m.c.push(esc(x[1]));else m.r+=(m.r?" ":"")+esc(l)}}
+if(!D.name||!n)return null;
+for(k in D.W)for(d in D.W[k])D.W[k][d].sort(function(a,b){return rk(a.t)-rk(b.t)});
+return D}
+function ik(m){var ty=nd(m.t),t=nd(m.c.join(" ")),f=function(r){return r.test(t)},o,co=/colazione/.test(ty);
+if(f(/pizza/))o={k:"pizza"};
+else if(f(/\buov|frittat/))o={k:"eggs",side:"erbette"};
+else if(f(/pesce|merluzz|sogliol|salmon|orata|branzin|tonno|nasell|platess|gamber|baccal/))o={k:"fish",a:"#E3C98E",b:"s",side:"insalata"};
+else if(f(/hamburger/))o={k:"burger",side:"insalata"};
+else if(f(/pollo|tacchin/))o={k:"chicken",b:"l",side:"insalata"};
+else if(!co&&f(/manzo|maiale|vitell|arrosto|bistecc|carne|fesa|arista|roast|coniglio/))o={k:"slices",a:"#B9824E",b:"#E9CFA6",side:"insalata"};
+else if(!co&&f(/mozzarella|formaggio|ricotta|caprino|feta|burrata/))o={k:"cheese",side:"insalata"};
+else if(f(/zuppa|vellutat|minestr|passato|crema di|legumi|lenticch/))o={k:"soup",a:"#E8A23A"};
+else if(f(/\briso|farro|orzo|cous|quinoa|miglio|basmati|venere/))o={k:"grain",g:f(/farro/)?"Farro":f(/orzo/)?"Orzo":f(/cous/)?"Cous cous":f(/basmati/)?"Riso basmati":f(/venere/)?"Riso Venere":"Riso integrale",s:-1};
+else if(f(/pasta|spaghett|penne|fusill|rigaton|gnocch|tagliatell|lasagn|ravioli/))o={k:"pasta",g:"Pasta integrale",s:-1};
+else if(co||f(/pane|toast|panino|fette|biscott|affettat|cornett|yogurt|cereal|caff/))o={k:"bread",b:"#D98B8B"};
+else if(/spuntino|merenda/.test(ty))o={k:"snack"};
+else o={k:"salad"};
+return o}
+function plan(x,d){var mw=0,k,s0,t=x.t0?x.t0.split("-"):null;for(k in d.W)mw=Math.max(mw,+k);
+s0=d.start?new Date(d.start[0],d.start[1],d.start[2]):(t?new Date(+t[0],t[1]-1,+t[2]):new Date());s0=new Date(s0.getFullYear(),s0.getMonth(),s0.getDate()-((s0.getDay()+6)%7));
+return {id:x.id,name:d.name,weeks:Math.max(d.weeks,mw),start:s0,txt:x.txt,t0:x.t0,so:d.so,cn:d.cn,
+mk:function(w,i){var W=d.W,k=DAYS[i][0],a=(W[w+1]&&W[w+1][k])||(W[1]&&W[1][k])||[];return a.map(function(m){return {t:m.t,c:m.c,r:m.r,a:m.a,o:m.o}})},
+ill:function(w,i,j,m){return svg(ik(m))}}}
+var BASE={id:"base",name:"Dieta Autunnale",weeks:4,start:new Date(2026,10,9),mk:mk,ill:ill,so:SO,cn:CN},LST=[BASE],P=BASE,edId=null,ied=false;
+var MOD=["DIETA: Nome della dieta","INIZIO: 2026-12-07","SETTIMANE: 1","","## Tutti i giorni","### Colazione","- Caffè senza zucchero","- Pane integrale 120 g con affettato magro 50 g","Alternative: yogurt greco","","## Lunedì","### Pranzo","- Pasta integrale 80 g con pomodoro","- Verdure a piacere","Preparazione: Cuoci la pasta al dente e condiscila con il sugo.","Olio: circa 2 cucchiaini d’olio","### Cena","- Petto di pollo ai ferri 120 g","- Insalata mista","","## Martedì, Giovedì","### Pranzo","- Riso integrale 80 g con zucchine","","# Sostituzioni","- 80 g di pasta = 80 g di riso","","# Consigli","- Bere 1,5–2 litri di acqua al giorno"].join("\n");
+var fl=true,cd="",wk=0,last=new Date().toDateString(),wkEl=document.getElementById("wk"),nav=document.getElementById("nav"),dz=document.getElementById("dz"),v=document.getElementById("v");
+function st(k,g){try{if(g===undefined)return localStorage.getItem("pa:"+k)==="1";localStorage.setItem("pa:"+k,g?"1":"0")}catch(e){return false}}
+function li(a){return "<ul>"+a.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul>"}
+function sv(){var a=LST.slice(1).map(function(p){return {id:p.id,txt:p.txt,t0:p.t0}});try{localStorage.setItem("pa:diets",JSON.stringify(a));return 1}catch(e){return 0}}
+function ld(){var a=[];try{a=JSON.parse(localStorage.getItem("pa:diets")||"[]")}catch(e){}LST=[BASE];a.forEach(function(x){var d=parse(x.txt||"");if(d)LST.push(plan(x,d))})}
+function rdz(){dz.innerHTML=LST.map(function(p){return '<button data-d="'+p.id+'" aria-pressed="'+(p===P)+'">'+p.name+'</button>'}).join("")+'<button data-d="add" class="add">+ Aggiungi dieta</button>'}
+function show(w,id){ied=false;rcal();
+var di=DAYS.map(function(d){return d[0]}).indexOf(id),xs=P.so&&P.so.length,xc=P.cn&&P.cn.length;
+if(di<0&&!(id==="sostituzioni"&&xs)&&!(id==="consigli"&&xc)){id=tid();di=DAYS.map(function(d){return d[0]}).indexOf(id)}
+wk=w;cd=id;rdz();
+wkEl.innerHTML=P.weeks>1?Array.apply(null,Array(P.weeks)).map(function(_,n){return '<button data-w="'+n+'" aria-pressed="'+(n===w)+'">Settimana '+(n+1)+'</button>'}).join(""):"";
+nav.innerHTML='<button data-k="oggi" aria-pressed="'+fl+'">Oggi</button>'+DAYS.concat(xs?[["sostituzioni","Sostituzioni"]]:[]).concat(xc?[["consigli","Consigli"]]:[]).map(function(t){return '<button data-k="'+t[0]+'" aria-pressed="'+(t[0]===id)+'">'+t[1]+'</button>'}).join("");
+var h="";
+if(di>=0){var tdy=w===cur()&&di===(new Date().getDay()+6)%7;h="<h2>"+DAYS[di][1]+(P.weeks>1?" · settimana "+(w+1):"")+(tdy?" · oggi":"")+"</h2>";
+var ms=P.mk(w,di),od=ms.map(function(_,k){return k}),nw0=-1;
+if(tdy){ms.forEach(function(m,k){if(nw0<0&&m.t.toLowerCase().indexOf(NOM[slot()])===0)nw0=k});if(nw0>=0)od=[nw0].concat(od.filter(function(x){return x!==nw0}))}
+if(!ms.length)h+='<p class="note">Nessun menù inserito per questo giorno.</p>';
+od.forEach(function(j){var m=ms[j],isn=j===nw0;var key=(P.id==="base"?"":P.id+":")+(nw()-cur()+w)+DAYS[di][0]+j;
+h+='<section class="m'+(isn?' now':'')+'"><div class="pic">'+P.ill(w,di,j,m)+'</div><div class="mb"><div class="hd"><h3>'+m.t+(isn?'<span class="nowb">Adesso</span>':'')+'</h3><label class="done"><input type="checkbox" data-s="'+key+'"'+(st(key)?" checked":"")+'> Fatto</label></div>'+li(m.c);
+if(m.we)h+='<div class="alt"><b>Alternativa</b>'+m.we+'</div>';
+if(m.r)h+='<details'+(isn?' open':'')+'><summary>Come si prepara</summary><p>'+m.r+'</p></details>';
+if(m.o)h+='<p class="olio">Olio: '+m.o+'</p>';
+if(m.a)h+='<div class="alt"><b>Alternative</b>'+m.a+'</div>';
+h+="</div></section>"});
+if(P.id==="base")h+='<p class="note">Olio totale della giornata: 5 cucchiaini da tè per cucinare e condire.</p>'}
+else h=id==="sostituzioni"?"<h2>Sostituzioni</h2>"+li(P.so):"<h2>Consigli utili</h2>"+li(P.cn);
+v.innerHTML=h}
+function rcal(){var d=new Date(),e=document.getElementById("cal");if(!e)return;e.innerHTML="<b>"+d.toLocaleDateString("it-IT",{month:"short"}).replace(".","")+"</b><strong>"+d.getDate()+"</strong><em>"+d.toLocaleDateString("it-IT",{weekday:"short"}).replace(".","")+"</em>";e.setAttribute("aria-label",d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}
+function nw(){var t=new Date();t=new Date(t.getFullYear(),t.getMonth(),t.getDate());return Math.floor(Math.round((t-P.start)/864e5)/7)}
+function cur(){return((nw()%P.weeks)+P.weeks)%P.weeks}
+function tid(){return DAYS[(new Date().getDay()+6)%7][0]}
+var ORARI=[600,900,1110];/* minuti dalla mezzanotte: colazione fino alle 10:00, pranzo fino alle 15:00, spuntino fino alle 18:30, poi cena */
+function slot(){var d=new Date(),m=d.getHours()*60+d.getMinutes();return m<ORARI[0]?0:m<ORARI[1]?1:m<ORARI[2]?3:2}
+var ls=slot();
+function go(){fl=true;show(cur(),tid())}
+function setP(p){P=p;try{localStorage.setItem("pa:act",p.id)}catch(e){}go()}
+function ed(id){fl=false;ied=true;var p=LST.filter(function(x){return x.id===id&&x!==BASE})[0];edId=p?p.id:null;wkEl.innerHTML="";nav.innerHTML="";rdz();
+v.innerHTML='<h2>'+(p?'Modifica dieta':'Aggiungi una dieta')+'</h2>'+(SMP?'<p class="note">Carica il PDF (o delle foto) della dieta: viene letto da Claude e trasformato in testo, che puoi controllare prima di salvare. In alternativa incolla il testo o carica un file .txt.</p><div class="row"><label class="fb pri">Leggi da PDF o foto<input type="file" id="fp" accept="application/pdf,image/*" multiple hidden></label><button id="ab" style="display:none">Interrompi</button></div>':'<p class="note">Incolla il testo della dieta nel formato del modello oppure caricalo da un file di testo (.txt). La lettura automatica del PDF funziona aprendo questa pagina dentro Claude (app o claude.ai).</p>')+'<p class="note" id="pg"></p><textarea id="tx" rows="16" spellcheck="false"></textarea><div class="row"><button id="md">Inserisci il modello</button><label class="fb">Carica file .txt<input type="file" id="fi" accept=".txt,text/plain" hidden></label></div><div class="row"><button id="sd" class="pri">Salva dieta</button><button id="an">Annulla</button></div><p class="olio" id="er"></p><h3>Le tue diete</h3>'+(LST.length>1?LST.slice(1).map(function(q){return '<div class="dl"><span>'+q.name+'</span><button data-e="'+q.id+'">Modifica</button><button data-x="'+q.id+'">Elimina</button></div>'}).join(""):'<p class="note">Nessuna dieta aggiunta.</p>');
+document.getElementById("tx").value=p?p.txt:""}
+function sd(){var tx=document.getElementById("tx").value,d=parse(tx),er=document.getElementById("er"),x,p,k=-1,n=new Date(),old=LST.filter(function(q){return q.id===edId})[0];
+if(!d){er.textContent="Non riesco a leggere la dieta: servono una riga «DIETA: nome», un giorno (## Lunedì) e almeno un pasto (### Pranzo). Prova con «Inserisci il modello».";return}
+x={id:edId||"c"+Date.now(),txt:tx,t0:old?old.t0:n.getFullYear()+"-"+(n.getMonth()+1)+"-"+n.getDate()};
+p=plan(x,d);LST.forEach(function(q,i){if(q.id===x.id)k=i});if(k>0)LST[k]=p;else LST.push(p);
+if(!sv())alert("Non riesco a salvare nel browser: la dieta resta solo finché la pagina è aperta.");
+setP(p)}
+var SMP=null,LIM=null,ac=null,busy=false,PJ="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/";
+try{if(window.claude&&window.claude.use)window.claude.use("sample").then(function(s){SMP=s;if(s&&s.limits)return s.limits().then(function(l){LIM=l}).catch(function(){})}).catch(function(){})}catch(e){}
+var PR="Sei un assistente che trascrive piani alimentari. Le immagini sono le pagine, in ordine, di una dieta preparata da una dietista. Trascrivi la dieta nel formato di testo seguente e rispondi SOLO con il testo, senza commenti e senza blocchi di codice.\n\nFORMATO:\nDIETA: titolo breve della dieta (senza il nome della persona)\nINIZIO: data del documento come AAAA-MM-GG (solo se presente)\nSETTIMANE: numero di settimane del menù (solo se più di una)\n# Settimana 1 (solo se il menù ha più settimane)\n## Lunedì (oppure ## Tutti i giorni per pasti identici ogni giorno, oppure ## Lunedì, Giovedì)\n### Colazione (poi Pranzo, Cena, Spuntino)\n- una voce per riga, con le porzioni esatte\nPreparazione: breve procedimento, solo se indicato nel documento\nAlternative: alternative previste per quel pasto\nOlio: dose d’olio se indicata\n# Sostituzioni\n- una sostituzione o equivalenza per riga\n# Consigli\n- un consiglio per riga\n\nREGOLE: usa i pesi e le porzioni esatti del documento; se il documento ha un menù per giorno usalo, e i pasti uguali ogni giorno mettili sotto ## Tutti i giorni; metti nella sezione Sostituzioni tutte le equivalenze e nei Consigli le indicazioni generali (acqua, cotture, attività fisica, cose da evitare); non includere nome, peso, altezza o altri dati personali; non inventare nulla che non sia nel documento.";
+function lp(){return new Promise(function(ok,ko){if(window.pdfjsLib)return ok();var s=document.createElement("script");s.src=PJ+"pdf.min.js";s.onload=function(){window.pdfjsLib.GlobalWorkerOptions.workerSrc=PJ+"pdf.worker.min.js";ok()};s.onerror=function(){ko({code:"pdfjs"})};document.head.appendChild(s)})}
+function pgm(m){var e=document.getElementById("pg");if(e)e.textContent=m}
+function pages(f,max){return f.arrayBuffer().then(function(b){return lp().then(function(){return window.pdfjsLib.getDocument({data:b}).promise})}).then(function(doc){var n=Math.min(doc.numPages,max),out=[],p=Promise.resolve(),i;for(i=1;i<=n;i++)(function(i){p=p.then(function(){pgm("Preparo la pagina "+i+" di "+n+"…");return doc.getPage(i).then(function(pa){var vp=pa.getViewport({scale:1.5}),c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;return pa.render({canvasContext:c.getContext("2d"),viewport:vp}).promise.then(function(){return new Promise(function(r){c.toBlob(function(bl){out.push(bl);r()},"image/jpeg",.85)})})})})})(i);return p.then(function(){return {imgs:out,total:doc.numPages}})})}
+function em(e){var c=e&&e.code;return c==="not_granted"?"Permesso negato: senza il tuo consenso non posso leggere il documento.":c==="rate_limited"?"Troppe richieste ravvicinate: riprova tra qualche minuto.":c==="cancelled"?"Lettura interrotta.":c==="pdfjs"?"Non riesco ad aprire il PDF in questa pagina: carica le pagine come foto o immagini (JPG o PNG).":c==="image_rejected"||c==="images_unavailable"?"Non riesco a leggere questo file: usa un PDF oppure foto JPG o PNG.":"Non sono riuscito a leggere il documento. Riprova con foto delle pagine oppure incolla il testo a mano."}
+function rd(files){if(busy||!SMP)return;var tx=document.getElementById("tx"),er=document.getElementById("er"),ab=document.getElementById("ab"),max=(LIM&&LIM.images&&LIM.images.maxCount)||6,f=files[0],isP=files.length===1&&(/pdf/i.test(f.type||"")||/\.pdf$/i.test(f.name||""));
+busy=true;er.textContent="";ac=new AbortController();if(ab)ab.style.display="inline-flex";pgm("Apro il documento…");
+(isP?pages(f,max):Promise.resolve({imgs:files.slice(0,max),total:files.length})).then(function(r){if(r.total>r.imgs.length)er.textContent="Attenzione: leggo solo le prime "+r.imgs.length+" pagine su "+r.total+".";pgm("Claude sta leggendo il documento: può volerci circa un minuto…");return SMP(PR,{images:r.imgs,modelTier:"default",cache:false,signal:ac.signal,onText:function(o){tx.value=o.text}})}).then(function(o){tx.value=o.text.replace(/^```\w*\n?|```\s*$/gm,"").trim();pgm("Fatto: controlla il testo qui sotto, correggilo se serve e premi «Salva dieta».")}).catch(function(e){pgm("");er.textContent=em(e)}).then(function(){busy=false;if(ab)ab.style.display="none"})}
+dz.onclick=function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.d==="add")ed(null);else{var p=LST.filter(function(q){return q.id===b.dataset.d})[0];if(p)setP(p)}};
+wkEl.onclick=function(e){var b=e.target.closest("button");if(b){fl=false;show(+b.dataset.w,cd)}};
+nav.onclick=function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.k==="oggi")go();else{fl=false;show(wk,b.dataset.k)}};
+v.onchange=function(e){var t=e.target;if(t.dataset.s)st(t.dataset.s,t.checked);else if(t.id==="fp"&&t.files.length){rd(Array.prototype.slice.call(t.files));t.value=""}else if(t.id==="fi"&&t.files[0]){var r=new FileReader();r.onload=function(){document.getElementById("tx").value=r.result};r.readAsText(t.files[0])}};
+v.onclick=function(e){var b=e.target.closest("button");if(!b)return;
+if(b.id==="md")document.getElementById("tx").value=MOD;
+else if(b.id==="an")go();else if(b.id==="ab"){if(ac)ac.abort()}
+else if(b.id==="sd")sd();
+else if(b.dataset.e)ed(b.dataset.e);
+else if(b.dataset.x&&confirm("Eliminare questa dieta?")){LST=LST.filter(function(p){return p.id!==b.dataset.x});sv();if(P.id===b.dataset.x){P=BASE;try{localStorage.setItem("pa:act","base")}catch(x){}}ed(null)}};
+function tick(){if(ied)return;var k=new Date().toDateString(),sl=slot();if(k!==last){last=k;ls=sl;if(fl)go();else show(wk,cd)}else if(sl!==ls){ls=sl;if(wk===cur()&&cd===tid())show(wk,cd)}}
+setInterval(tick,60000);document.addEventListener("visibilitychange",tick);
+ld();var act="";try{act=localStorage.getItem("pa:act")||""}catch(e){}P=LST.filter(function(p){return p.id===act})[0]||BASE;
+go();
+</script>
+</body>
+</html>
